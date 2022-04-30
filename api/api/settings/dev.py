@@ -1,10 +1,11 @@
+import os
 from .common import *
 
 
 DEBUG = True
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure--qrz*=y6q!2c6uf76y_r)vk75-kd$i==abk+a=&z-e+e5!vnb6"
+SECRET_KEY = os.environ.get["DJANGO_SECRET_KEY"]
 
 
 DATABASES = {
