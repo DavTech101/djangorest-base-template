@@ -30,9 +30,11 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "store",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -74,7 +76,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "api.wsgi.application"
 
 
-# Make Django logging to console
+# Make Django logging to file
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
