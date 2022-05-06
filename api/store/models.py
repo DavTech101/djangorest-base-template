@@ -67,6 +67,7 @@ class Address(models.Model):
     customer = models.OneToOneField(
         Customer, on_delete=models.CASCADE, primary_key=True
     )
+    zipcode = models.CharField(max_length=255)
 
 
 class Order(models.Model):
