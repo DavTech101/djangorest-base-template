@@ -23,7 +23,7 @@ class Collection(models.Model):
 class Product(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True)  # Search engine optimization
+    slug = models.SlugField(max_length=255)  # Search engine optimization
     description = models.TextField(blank=True)
     unit_price = models.DecimalField(max_digits=10, decimal_places=2)
     inventory = models.IntegerField()
@@ -64,7 +64,7 @@ class Customer(models.Model):
         indexes = [
             models.Index(fields=["first_name", "last_name"]),
         ]
- 
+
 
 class Address(models.Model):
     street = models.CharField(max_length=255)
