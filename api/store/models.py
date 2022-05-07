@@ -66,6 +66,7 @@ class Customer(models.Model):
         return f"{self.first_name} {self.last_name}"
 
     class Meta:
+        ordering = ["last_name", "first_name"]
         indexes = [
             models.Index(fields=["first_name", "last_name"]),
         ]
