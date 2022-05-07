@@ -12,7 +12,17 @@ class Tag(models.Model):
         return self.label
 
 
+class TaggedItemManager(models.Manager):
+    def get_tags_for(self, model, obj_id):
+        content_type = ContentType.objects.get_for_model(model)
+
+        return self.select_related("tag").filter(  # TaggedItem.objects Replaces self
+            content_type=content_type, object_id=obj_id
+        )
+
+
 class TaggedItem(models.Model):
+    objects = TaggedItemManager()
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     object_id = models.UUIDField()
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
