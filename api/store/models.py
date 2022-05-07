@@ -22,6 +22,9 @@ class Collection(models.Model):
     def __str__(self) -> str:
         return self.title
 
+    class Meta:
+        ordering = ["title"]
+
 
 class Product(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
