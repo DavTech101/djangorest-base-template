@@ -3,7 +3,6 @@ from django.db import models
 
 
 class Promotion(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=100)
     description = models.TextField()
     start_date = models.DateTimeField()
@@ -27,7 +26,6 @@ class Collection(models.Model):
 
 
 class Product(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)  # Search engine optimization
     description = models.TextField(blank=True)
@@ -55,7 +53,6 @@ class Customer(models.Model):
         (MEMBERSHIP_BRONZE, "Bronze"),
     ]
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
@@ -97,7 +94,6 @@ class Order(models.Model):
         (PAYMENT_STATUS_FAILED, "Failed"),
     ]
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     placed_at = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(
         max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING
@@ -119,7 +115,6 @@ class OrderItem(models.Model):  # OrderItem is a join table
 
 
 class Cart(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
