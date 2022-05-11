@@ -7,5 +7,4 @@ from tags.models import TaggedItem
 def say_hello(request):
     queryset = TaggedItem.objects.get_tags_for(Product, 1)
 
-    print(queryset)
     return HttpResponse("Hello, world!")
