@@ -29,8 +29,10 @@ class ProductAdmin(admin.ModelAdmin):
     list_per_page = 100
     actions = ("clear_inventory",)
     list_editable = ("unit_price",)
+    autocomplete_fields = ("collection",)
     list_display = ("title", "inventory_status", "collection", "unit_price")
     list_filter = ("collection", "last_updated", "promotions", InventoryFilter)
+    prepopulated_fields = {"slug": ("title",)}
 
     @admin.display(ordering="inventory")
     def inventory_status(self, product):
@@ -49,7 +51,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
-    list_per_page = 100 
+    list_per_page = 100
     list_editable = ("membership",)
     ordering = ("first_name", "last_name")
     search_fields = (
@@ -72,6 +74,7 @@ class CustomerAdmin(admin.ModelAdmin):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_per_page = 100
+    autocomplete_fields = ("customer",)
     list_select_related = ("customer",)
     list_display = ("id", "customer", "placed_at")
 
@@ -79,6 +82,7 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(Collection)
 class CollectionAdmin(admin.ModelAdmin):
     list_per_page = 100
+    search_fields = ("title",)
     list_display = ("title", "featured_product", "products_count")
 
     @admin.display(ordering="products_count")
