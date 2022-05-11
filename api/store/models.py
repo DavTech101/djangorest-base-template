@@ -1,5 +1,5 @@
-import uuid
 from django.db import models
+from django.core.validators import MinValueValidator
 
 
 class Promotion(models.Model):
@@ -29,7 +29,9 @@ class Product(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255)  # Search engine optimization
     description = models.TextField(blank=True)
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    unit_price = models.DecimalField(
+        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+    )
     inventory = models.IntegerField()
     last_updated = models.DateTimeField(auto_now=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
