@@ -1,10 +1,12 @@
 from django.urls import reverse
+from tags.models import TaggedItem
 from django.http import HttpRequest
 from django.utils.html import format_html
 from django.contrib import admin, messages
 from django.db.models.query import QuerySet
 from django.db.models.aggregates import Count
-from .models import Collection, Customer, Product, Order
+from django.contrib.contenttypes.admin import GenericTabularInline
+from .models import Collection, Customer, Product, Order, OrderItem
 
 
 class InventoryFilter(admin.SimpleListFilter):
@@ -24,15 +26,23 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__range=(10, 20))
 
 
+class TagInline(GenericTabularInline):
+    extra = 0
+    model = TaggedItem
+    autocomplete_fields = ("tag",)
+
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_per_page = 100
+    inlines = [TagInline]
+    search_fields = ("title",)
     actions = ("clear_inventory",)
     list_editable = ("unit_price",)
     autocomplete_fields = ("collection",)
+    prepopulated_fields = {"slug": ("title",)}
     list_display = ("title", "inventory_status", "collection", "unit_price")
     list_filter = ("collection", "last_updated", "promotions", InventoryFilter)
-    prepopulated_fields = {"slug": ("title",)}
 
     @admin.display(ordering="inventory")
     def inventory_status(self, product):
@@ -71,9 +81,16 @@ class CustomerAdmin(admin.ModelAdmin):
         return super().get_queryset(request).annotate(orders_count=Count("order"))
 
 
+class OrderItemInline(admin.TabularInline):
+    extra = 0
+    model = OrderItem
+    autocomplete_fields = ("product",)
+
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_per_page = 100
+    inlines = (OrderItemInline,)
     autocomplete_fields = ("customer",)
     list_select_related = ("customer",)
     list_display = ("id", "customer", "placed_at")
