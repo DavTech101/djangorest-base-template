@@ -1,11 +1,9 @@
 from django.urls import reverse
-from tags.models import TaggedItem
 from django.http import HttpRequest
 from django.utils.html import format_html
 from django.contrib import admin, messages
 from django.db.models.query import QuerySet
 from django.db.models.aggregates import Count
-from django.contrib.contenttypes.admin import GenericTabularInline
 from .models import Collection, Customer, Product, Order, OrderItem
 
 
@@ -26,16 +24,9 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__range=(10, 20))
 
 
-class TagInline(GenericTabularInline):
-    extra = 0
-    model = TaggedItem
-    autocomplete_fields = ("tag",)
-
-
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_per_page = 100
-    inlines = [TagInline]
     search_fields = ("title",)
     actions = ("clear_inventory",)
     list_editable = ("unit_price",)
