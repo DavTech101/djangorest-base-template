@@ -1,10 +1,15 @@
-from django.http import HttpResponse
-from django.http import HttpResponse
 from store.models import Product
 from tags.models import TaggedItem
+from django.http import HttpResponse
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
-def say_hello(request):
-    queryset = TaggedItem.objects.get_tags_for(Product, 1)
+@api_view()
+def product_list(request):
+    return Response("OK")
 
-    return HttpResponse("Hello, world!")
+
+@api_view()
+def product_detail(request, pk):
+    return Response(pk)
