@@ -1,5 +1,5 @@
 from rest_framework import status
-from .models import Product, Collection
+from .models import Product, Collection, Customer, Order, OrderItem
 from rest_framework.response import Response
 from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
@@ -11,16 +11,14 @@ class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count("products")).all()
     serializer_class = CollectionSerializer
 
-    def delete(self, request, pk):
-        collection = get_object_or_404(Collection, pk=pk)
-        if collection.products.count() >= 1:
+    def destroy(self, request, *args, **kwargs):
+        if Product.objects.filter(collection_id=kwargs["pk"]).count() >= 1:
             return Response(
                 {"error": "Collection cannot be deleted, it has products in it."},
                 status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )
-        collection.delete()
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return super().destroy(request, *args, **kwargs)
 
 
 class ProductViewSet(ModelViewSet):
@@ -30,13 +28,10 @@ class ProductViewSet(ModelViewSet):
     def get_serializer_context(self):
         return {"request": self.request}
 
-    def delete(self, request, pk):
-        product = get_object_or_404(Product, pk=pk)
-        if product.orderitems.count() >= 1:
+    def destroy(self, request, *args, **kwargs):
+        if OrderItem.objects.filter(product_id=kwargs["pk"]).count() >= 1:
             return Response(
                 {"error": "Product cannot be deleted, it is in an ordered item."},
                 status=status.HTTP_405_METHOD_NOT_ALLOWED,
             )
-        product.delete()
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return super().destroy(request, *args, **kwargs)

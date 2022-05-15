@@ -132,3 +132,13 @@ class CartItem(models.Model):  # CartItem is a join table
 
     def __str__(self) -> str:
         return f"{self.product} - {self.quantity}"
+
+
+class Review(models.Model):
+    review = models.TextField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.customer.first_name} - {self.product.title}"
