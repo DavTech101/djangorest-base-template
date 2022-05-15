@@ -136,8 +136,12 @@ class CartItem(models.Model):  # CartItem is a join table
 
 class Review(models.Model):
     review = models.TextField()
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="reviews"
+    )
+    customer = models.ForeignKey(
+        Customer, on_delete=models.CASCADE, related_name="reviews"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
