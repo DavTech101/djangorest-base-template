@@ -3,19 +3,11 @@ from .models import Product, Collection
 from rest_framework.response import Response
 from django.db.models.aggregates import Count
 from django.shortcuts import get_object_or_404
+from rest_framework.viewsets import ModelViewSet
 from .serializers import ProductSerializer, CollectionSerializer
-from rest_framework.generics import (
-    RetrieveUpdateDestroyAPIView,
-    ListCreateAPIView,
-)
 
 
-class CollectionList(ListCreateAPIView):
-    queryset = Collection.objects.annotate(products_count=Count("products")).all()
-    serializer_class = CollectionSerializer
-
-
-class CollectionDetail(RetrieveUpdateDestroyAPIView):
+class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count("products")).all()
     serializer_class = CollectionSerializer
 
@@ -31,17 +23,12 @@ class CollectionDetail(RetrieveUpdateDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ProductList(ListCreateAPIView):
-    queryset = Product.objects.select_related("collection").all()
+class ProductViewSet(ModelViewSet):
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
     def get_serializer_context(self):
         return {"request": self.request}
-
-
-class ProductDetail(RetrieveUpdateDestroyAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
 
     def delete(self, request, pk):
         product = get_object_or_404(Product, pk=pk)
