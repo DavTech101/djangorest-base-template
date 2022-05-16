@@ -1,3 +1,4 @@
+from uuid import uuid4
 from django.db import models
 from django.core.validators import MinValueValidator
 
@@ -122,16 +123,21 @@ class OrderItem(models.Model):  # OrderItem is a join table
 
 
 class Cart(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
 class CartItem(models.Model):  # CartItem is a join table
     quantity = models.PositiveSmallIntegerField()
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
         return f"{self.product} - {self.quantity}"
+
+    class Meta:
+        ordering = ["product"]
+        unique_together = [["cart", "product"]]
 
 
 class Review(models.Model):
