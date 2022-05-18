@@ -1,3 +1,4 @@
+from typing import List
 from rest_framework import status
 from .filters import ProductFilter
 from .pagination import DefaultPagination
@@ -14,6 +15,7 @@ from .serializers import (
     CartSerializer,
     CartItemSerializer,
     AddCartItemSerializer,
+    UpdateCartItemSerializer,
 )
 from rest_framework.mixins import (
     CreateModelMixin,
@@ -75,6 +77,8 @@ class CartViewSet(
 
 
 class CartItemViewSet(ModelViewSet):
+    http_method_names: List[str] = ["get", "post", "patch", "delete"]  # Allowed methods
+
     def get_queryset(self):
         return CartItem.objects.filter(cart_id=self.kwargs["cart_pk"]).select_related(
             "product"
@@ -83,6 +87,8 @@ class CartItemViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.request.method == "POST":
             return AddCartItemSerializer
+        elif self.request.method == "PATCH":
+            return UpdateCartItemSerializer
 
         return CartItemSerializer
 
