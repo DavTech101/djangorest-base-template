@@ -3,6 +3,7 @@ from rest_framework import serializers
 from .models import Product, Customer, Collection, Review, Cart, CartItem
 
 
+########################### COLLECTION ###################################################
 class CollectionSerializer(serializers.ModelSerializer):
     products_count = serializers.IntegerField(read_only=True)
 
@@ -11,6 +12,7 @@ class CollectionSerializer(serializers.ModelSerializer):
         fields = ("id", "title", "products_count")
 
 
+########################### PRODUCT ######################################################
 class ProductSerializer(serializers.ModelSerializer):
     price_with_tax = serializers.SerializerMethodField(method_name="calculate_tax")
     collection = serializers.HyperlinkedRelatedField(
@@ -34,18 +36,20 @@ class ProductSerializer(serializers.ModelSerializer):
         )
 
 
-class CustomerSerializer(serializers.Serializer):
-    class Meta:
-        model = Customer
-        fields = ("id", "first_name", "last_name", "email", "phone", "birth_date")
-
-
 class SimpleProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ("id", "title", "unit_price")
 
 
+########################### CUSTOMER ###################################################
+class CustomerSerializer(serializers.Serializer):
+    class Meta:
+        model = Customer
+        fields = ("id", "first_name", "last_name", "email", "phone", "birth_date")
+
+
+########################### CARTITEM ###################################################
 class CartItemSerializer(serializers.ModelSerializer):
     product = SimpleProductSerializer()
     total_price = serializers.SerializerMethodField(method_name="calculate_total_price")
@@ -96,6 +100,7 @@ class UpdateCartItemSerializer(serializers.ModelSerializer):
         fields = ("quantity",)
 
 
+########################### CART ######################################################
 class CartSerializer(serializers.ModelSerializer):
     items = CartItemSerializer(many=True, read_only=True)
     total_price = serializers.SerializerMethodField(method_name="calculate_total_price")
@@ -108,6 +113,7 @@ class CartSerializer(serializers.ModelSerializer):
         fields = ("id", "total_price", "items")
 
 
+########################### REVIEWS ###################################################
 class ReviewSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         product = Product.objects.get(pk=self.context["product_id"])
