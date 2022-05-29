@@ -75,7 +75,7 @@ class Customer(models.Model):
     def last_name(self) -> str:
         return self.user.last_name
 
-    @admin.display(ordering="user__email") 
+    @admin.display(ordering="user__email")
     def email(self) -> str:
         return self.user.email
 
@@ -120,6 +120,11 @@ class Order(models.Model):
 
     def __str__(self) -> str:
         return f"{self.payment_status} - {self.customer.first_name}"
+
+    class Meta:
+        permissions = [
+            ("cancel_order", "Can cancel an order"),
+        ]
 
 
 class OrderItem(models.Model):  # OrderItem is a join table
