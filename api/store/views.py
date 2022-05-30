@@ -7,23 +7,25 @@ from django.db.models.aggregates import Count
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from .models import Product, Collection, OrderItem, Review, Cart, CartItem
+from .models import Product, Collection, OrderItem, Review, Cart, CartItem, Customer
 from .serializers import (
     ProductSerializer,
     CollectionSerializer,
     ReviewSerializer,
     CartSerializer,
     CartItemSerializer,
+    CustomerSerializer,
     AddCartItemSerializer,
     UpdateCartItemSerializer,
 )
 from rest_framework.mixins import (
     CreateModelMixin,
+    UpdateModelMixin,
     RetrieveModelMixin,
     DestroyModelMixin,
 )
 
-
+########################### COLLECTION #####################################################
 class CollectionViewSet(ModelViewSet):
     queryset = Collection.objects.annotate(products_count=Count("products")).all()
     serializer_class = CollectionSerializer
@@ -38,6 +40,7 @@ class CollectionViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
+########################### PRODUCT ########################################################
 class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -59,6 +62,7 @@ class ProductViewSet(ModelViewSet):
         return super().destroy(request, *args, **kwargs)
 
 
+########################### REVIEWS ########################################################
 class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
 
@@ -69,6 +73,7 @@ class ReviewViewSet(ModelViewSet):
         return {"product_id": self.kwargs["product_pk"]}
 
 
+########################### CART ##########################################################
 class CartViewSet(
     RetrieveModelMixin, DestroyModelMixin, CreateModelMixin, GenericViewSet
 ):
@@ -76,6 +81,7 @@ class CartViewSet(
     serializer_class = CartSerializer
 
 
+########################### CARTITEM ######################################################
 class CartItemViewSet(ModelViewSet):
     http_method_names: List[str] = ["get", "post", "patch", "delete"]  # Allowed methods
 
@@ -94,3 +100,11 @@ class CartItemViewSet(ModelViewSet):
 
     def get_serializer_context(self):
         return {"cart_id": self.kwargs["cart_pk"]}
+
+
+########################### CUSTOMER ######################################################
+class CustomerViewSet(
+    CreateModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet
+):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer

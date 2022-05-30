@@ -43,10 +43,12 @@ class SimpleProductSerializer(serializers.ModelSerializer):
 
 
 ########################### CUSTOMER ###################################################
-class CustomerSerializer(serializers.Serializer):
+class CustomerSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField()
+
     class Meta:
         model = Customer
-        fields = ("id", "first_name", "last_name", "email", "phone", "birth_date")
+        fields = ("id", "user_id", "phone", "birth_date", "membership")
 
 
 ########################### CARTITEM ###################################################
@@ -122,3 +124,12 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ("id", "author", "review", "created_at")
+
+
+########################### PROFILES ###################################################
+class ProfileSerializer(serializers.Serializer):  # Not Used
+    customer = CustomerSerializer()
+    cart = CartSerializer()
+
+    class Meta:
+        fields = ("customer", "cart")
