@@ -87,6 +87,9 @@ class Customer(models.Model):
         indexes = [
             models.Index(fields=["birth_date"]),
         ]
+        permissions = [
+            ("view_history", "Can view history"),
+        ]
 
 
 class Address(models.Model):

@@ -2,7 +2,6 @@ from typing import List
 from rest_framework import status
 from .filters import ProductFilter
 from .pagination import DefaultPagination
-from .permissions import IsAdminOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models.aggregates import Count
@@ -10,6 +9,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from .permissions import IsAdminOrReadOnly, ViewCustomerHistoryPermission
 from .models import Product, Collection, OrderItem, Review, Cart, CartItem, Customer
 from .serializers import (
     ProductSerializer,
@@ -23,7 +23,6 @@ from .serializers import (
 )
 from rest_framework.mixins import (
     CreateModelMixin,
-    UpdateModelMixin,
     RetrieveModelMixin,
     DestroyModelMixin,
 )
@@ -126,3 +125,7 @@ class CustomerViewSet(ModelViewSet):
             serializer.save()
 
             return Response(serializer.data)
+
+    @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
+    def history(self, request, pk):
+        return Response("History")
