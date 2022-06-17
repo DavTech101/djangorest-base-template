@@ -10,21 +10,31 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .permissions import IsAdminOrReadOnly, ViewCustomerHistoryPermission
-from .models import Product, Collection, OrderItem, Review, Cart, CartItem, Customer
+from .models import (
+    Cart,
+    Order,
+    Review,
+    Product,
+    Customer,
+    CartItem,
+    OrderItem,
+    Collection,
+)
 from .serializers import (
-    ProductSerializer,
-    CollectionSerializer,
-    ReviewSerializer,
     CartSerializer,
+    OrderSerializer,
+    ReviewSerializer,
+    ProductSerializer,
     CartItemSerializer,
     CustomerSerializer,
+    CollectionSerializer,
     AddCartItemSerializer,
     UpdateCartItemSerializer,
 )
 from rest_framework.mixins import (
     CreateModelMixin,
-    RetrieveModelMixin,
     DestroyModelMixin,
+    RetrieveModelMixin,
 )
 
 ########################### COLLECTION #####################################################
@@ -129,3 +139,19 @@ class CustomerViewSet(ModelViewSet):
     @action(detail=True, permission_classes=[ViewCustomerHistoryPermission])
     def history(self, request, pk):
         return Response("History")
+
+
+########################### ORDERS ########################################################
+class OrderViewSet(ModelViewSet):
+    serializer_class = OrderSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_staff:
+            return Order.objects.all()
+
+        (customer_id, created) = Customer.objects.only("id").get_or_create(
+            user_id=user.id
+        )
+        return Order.objects.filter(customer_id=customer_id)

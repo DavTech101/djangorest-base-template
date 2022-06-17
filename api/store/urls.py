@@ -7,6 +7,7 @@ router.register("products", views.ProductViewSet, basename="products")
 router.register("collections", views.CollectionViewSet)
 router.register("carts", views.CartViewSet, basename="carts")
 router.register("customers", views.CustomerViewSet, basename="customers")
+router.register("orders", views.OrderViewSet, basename="orders")
 
 products_router = NestedDefaultRouter(router, "products", lookup="product")
 products_router.register("reviews", views.ReviewViewSet, basename="product-reviews")
@@ -18,4 +19,3 @@ urlpatterns = [
     path("", include(products_router.urls)),
     path("", include(carts_router.urls)),
 ]
- 
