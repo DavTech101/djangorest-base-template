@@ -66,7 +66,7 @@ class Customer(models.Model):
         max_length=1, choices=MEMBERSHIP_CHOICES, default=MEMBERSHIP_BRONZE
     )
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-
+    
     @admin.display(ordering="user__first_name")
     def first_name(self) -> str:
         return self.user.first_name
